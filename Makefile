@@ -6,7 +6,7 @@
 #    By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/29 11:56:39 by alelaval          #+#    #+#              #
-#    Updated: 2021/11/29 14:36:39 by alelaval         ###   ########.fr        #
+#    Updated: 2021/12/08 19:28:28 by alelaval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ OBJS =	${SRCS:.c=.o}
 
 INCLUDE =	./headers/
 LIB_PATH =	./libft/
-CFLAGS =	-Wall -Wextra -Werror
+CFLAGS =	-Wall -Wextra -Werror -fsanitize=address
 RM = 		rm -rf
 
 all: 		${NAME}
