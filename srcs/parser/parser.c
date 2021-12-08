@@ -6,7 +6,7 @@
 /*   By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 12:03:00 by alelaval          #+#    #+#             */
-/*   Updated: 2021/12/02 16:53:33 by alelaval         ###   ########.fr       */
+/*   Updated: 2021/12/08 20:10:14 by alelaval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,40 +14,48 @@
 
 int	get_fd(char *arg, char *path)
 {
-	int		fd;
 	char	*tmp;
 
-	if (arg)
+	tmp = NULL;
+	if (arg && path)
 	{
-		ft_putstr(path);
+		arg = ft_strjoin("/", arg);
 		tmp = ft_strjoin(path, arg);
-		ft_putstr(tmp);
-		ft_putchar('\n');
-		fd = open(tmp, O_RDONLY);
+		if (access(tmp, X_OK) == 0)
+		{
+			free(arg);
+			free(tmp);
+			return (0);
+		}
+		free(arg);
 		free(tmp);
-		return (fd);
 	}
 	return (-1);
 }
 
-int	test_func(t_pipex *pipex, char *arg, char **paths)
+int	test_func(t_pipex *pipex, int com, char **paths)
 {
-	int		fd;
-	int		i;
+	int			i;
+	int			ret;
+	const char	*arg;
 
-	if (arg)
+	if (com == 1)
+		arg = (const char *)pipex->command1;
+	else if (com == 2)
+		arg = (const char *)pipex->command2;
+	if (!ft_strncmp(arg, "/", 1) || !ft_strncmp(arg, "./", 2))
 	{
-		if (!ft_strncmp(arg, "/", 1) || !ft_strncmp(arg, "./", 2))
-			fd = open(arg, O_RDONLY);
-		else
-		{
-			i = 0;
-			while (paths[i] && fd < 1)
-				fd = get_fd(arg, paths[i++]);
-		}
-		return (fd);
+		if (access(arg, R_OK) == 0)
+			return (0);
 	}
-	error(pipex, EXIT_FAILURE);
+	else
+	{
+		i = 0;
+		ret = -1;
+		while (paths[i] && ret < 0)
+			ret = get_fd((char *)arg, paths[i++]);
+		return (ret);
+	}
 	return (-1);
 }
 
@@ -64,8 +72,72 @@ int	test_fd(t_pipex *pipex, char *arg)
 	return (-1);
 }
 
+int	size_array(char **array)
+{
+	int	i;
+
+	if (array)
+	{
+		i = 0;
+		while (array[i])
+			i++;
+		return (i);
+	}
+	return (0);
+}
+
+char	**fill_args(char **args)
+{
+	int		i;
+	int		size;
+	char	**array;
+
+	i = 0;
+	size = size_array(args);
+	array = (char **)(malloc(sizeof(char *) * size + 1));
+	while ((size - 1) > 0)
+	{
+		array[i] = ft_strdup(args[i + 1]);
+		size--;
+		i++;
+	}
+	array[i] = NULL;
+	if (args)
+	{
+		i = 0;
+		while (args[i])
+			free(args[i++]);
+		free(args);
+	}
+	return (array);
+}
+
+void	get_args(t_pipex *pipex, char *arg, int com)
+{
+	char	**args;
+
+	if (arg)
+	{
+		args = ft_split(arg, ' ');
+		if (com == 1)
+		{
+			pipex->command1 = ft_strdup((const char *)args[0]);
+			pipex->args1 = fill_args(args);
+		}
+		else if (com == 2)
+		{
+			pipex->command2 = ft_strdup((const char *)args[0]);
+			pipex->args2 = fill_args(args);
+		}
+		return ;
+	}
+	error(pipex, EXIT_FAILURE);
+}
+
 t_pipex	*parser(t_pipex *pipex, int count, char **args, char **paths)
 {
+	int	i;
+
 	if (count == 5)
 	{
 		pipex->file1 = test_fd(pipex, args[1]);
@@ -77,13 +149,29 @@ t_pipex	*parser(t_pipex *pipex, int count, char **args, char **paths)
 		if ((pipex->file1 < 1) || (pipex->file2 < 1))
 			error(pipex, EXIT_FAILURE);
 		ft_putstr("fichiers bon\n");
-		pipex->command1 = test_func(pipex, args[2], paths);
-		pipex->command2 = test_func(pipex, args[3], paths);
-		ft_putnbr_fd(pipex->command1, 1);
+		get_args(pipex, args[2], 1);
+		get_args(pipex, args[3], 2);
+		if (test_func(pipex, 1, paths) == -1
+			|| test_func(pipex, 2, paths) == -1)
+			error(pipex, EXIT_FAILURE);
+		ft_putstr("Commandes :\n");
+		ft_putstr((char *)pipex->command1);
 		ft_putchar('\n');
-		ft_putnbr_fd(pipex->command2, 1);
+		i = 0;
+		while (pipex->args1[i])
+		{
+			ft_putstr(pipex->args1[i++]);
+			ft_putchar('\n');
+		}
+		i = 0;
+		ft_putstr((char *)pipex->command2);
 		ft_putchar('\n');
-		if ((pipex->command1 < 1) || (pipex->command2 < 1))
+		while (pipex->args2[i])
+		{
+			ft_putstr(pipex->args2[i++]);
+			ft_putchar('\n');
+		}
+		if (!pipex->command1 || !pipex->command2)
 			error(pipex, EXIT_FAILURE);
 		ft_putstr("commandes bonne\n");
 		return (pipex);
