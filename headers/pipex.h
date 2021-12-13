@@ -6,12 +6,14 @@
 /*   By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 11:53:20 by alelaval          #+#    #+#             */
-/*   Updated: 2021/12/09 13:43:23 by alelaval         ###   ########.fr       */
+/*   Updated: 2021/12/13 18:02:39 by alelaval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
+# include "string.h"
+# include "errno.h"
 # include "../libft/headers/libft.h"
 
 typedef struct s_pipex

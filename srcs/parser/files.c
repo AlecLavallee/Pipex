@@ -6,12 +6,11 @@
 /*   By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/09 13:38:48 by alelaval          #+#    #+#             */
-/*   Updated: 2021/12/09 13:39:20 by alelaval         ###   ########.fr       */
+/*   Updated: 2021/12/13 18:04:18 by alelaval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
 int	get_fd(char *arg, char *path)
 {
 	char	*tmp;
