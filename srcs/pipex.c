@@ -6,7 +6,7 @@
 /*   By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 11:53:24 by alelaval          #+#    #+#             */
-/*   Updated: 2021/12/13 17:35:42 by alelaval         ###   ########.fr       */
+/*   Updated: 2021/12/13 19:30:00 by alelaval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,23 @@ char	**get_paths(char **envp)
 
 void	ft_pipex(t_pipex *pipex, char **envp)
 {
-	if (!execve(pipex->command1, pipex->args1, envp))
+	int		end[2];
+	pid_t	parent;
+
+	(void)envp;
+	pipe(end);
+	pipex->end1 = end[0];
+	pipex->end2 = end[1];
+	parent = fork();
+	if (parent < 0)
+	{
+		perror("Fork: ");
 		error(pipex, EXIT_FAILURE);
-	if (!execve(pipex->command2, pipex->args2, envp))
-		error(pipex, EXIT_FAILURE);
+	}
+	if (!parent)
+		child_process(pipex);
+	else
+		parent_process(pipex);
 	ft_putstr("Pipex done\n");
 }
 
@@ -72,6 +85,7 @@ int	main(int num_args, char **args, char **envp)
 	{
 		pipex = init_all();
 		paths = get_paths(envp);
+		pipex->envp = envp;
 		parser(pipex, num_args, args, paths);
 		ft_pipex(pipex, envp);
 		free_all(pipex, EXIT_SUCCESS);
