@@ -6,11 +6,12 @@
 /*   By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/09 13:38:48 by alelaval          #+#    #+#             */
-/*   Updated: 2021/12/13 18:04:18 by alelaval         ###   ########.fr       */
+/*   Updated: 2021/12/14 16:37:42 by alelaval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
 int	get_fd(char *arg, char *path)
 {
 	char	*tmp;
@@ -32,15 +33,20 @@ int	get_fd(char *arg, char *path)
 	return (-1);
 }
 
-int	test_fd(t_pipex *pipex, char *arg)
+void	test_files(t_pipex *pipex, char **args)
 {
 	int	ret;
 
-	if (arg)
+	ret = open(args[1], O_RDONLY);
+	if (ret == -1)
 	{
-		ret = open(arg, O_RDONLY);
-		return (ret);
+		perror("File1 ");
+		error(pipex, EXIT_FAILURE);
 	}
-	error(pipex, EXIT_FAILURE);
-	return (-1);
+	ret = open(args[4], O_RDONLY);
+	if (ret == -1)
+	{
+		perror("File2 ");
+		error(pipex, EXIT_FAILURE);
+	}
 }

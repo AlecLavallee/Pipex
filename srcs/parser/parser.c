@@ -6,7 +6,7 @@
 /*   By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 12:03:00 by alelaval          #+#    #+#             */
-/*   Updated: 2021/12/09 14:00:56 by alelaval         ###   ########.fr       */
+/*   Updated: 2021/12/14 16:31:42 by alelaval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,11 +90,7 @@ t_pipex	*parser(t_pipex *pipex, int count, char **args, char **paths)
 {
 	if (count == 5)
 	{
-		pipex->file1 = test_fd(pipex, args[1]);
-		pipex->file2 = test_fd(pipex, args[4]);
-		if ((pipex->file1 < 1) || (pipex->file2 < 1))
-			error(pipex, EXIT_FAILURE);
-		ft_putstr("fichiers bon\n");
+		test_files(pipex, args);
 		get_args(pipex, args[2], 1);
 		get_args(pipex, args[3], 2);
 		if (test_func(pipex, 1, paths) == -1
@@ -102,7 +98,6 @@ t_pipex	*parser(t_pipex *pipex, int count, char **args, char **paths)
 			error(pipex, EXIT_FAILURE);
 		if (!pipex->command1 || !pipex->command2)
 			error(pipex, EXIT_FAILURE);
-		ft_putstr("commandes bonne\n");
 		return (pipex);
 	}
 	error(pipex, EXIT_FAILURE);

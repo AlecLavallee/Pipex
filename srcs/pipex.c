@@ -6,7 +6,7 @@
 /*   By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 11:53:24 by alelaval          #+#    #+#             */
-/*   Updated: 2021/12/13 19:30:00 by alelaval         ###   ########.fr       */
+/*   Updated: 2021/12/14 16:41:50 by alelaval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,26 +53,35 @@ char	**get_paths(char **envp)
 	return (NULL);
 }
 
-void	ft_pipex(t_pipex *pipex, char **envp)
+void	ft_pipex(t_pipex *pipex)
 {
 	int		end[2];
-	pid_t	parent;
+	int		status;
+	pid_t	pid1;
+	pid_t	pid2;
 
-	(void)envp;
-	pipe(end);
-	pipex->end1 = end[0];
-	pipex->end2 = end[1];
-	parent = fork();
-	if (parent < 0)
+	if (pipe(end) == -1)
 	{
-		perror("Fork: ");
+		perror("Pipe ");
 		error(pipex, EXIT_FAILURE);
 	}
-	if (!parent)
-		child_process(pipex);
-	else
-		parent_process(pipex);
-	ft_putstr("Pipex done\n");
+	pipex->end = end;
+	pid1 = fork();
+	if (pid1 < 0)
+	{
+		perror("Fork ");
+		error(pipex, EXIT_FAILURE);
+	}
+	pid2 = fork();
+	if (pid2 < 0)
+	{
+		perror("Fork ");
+		error(pipex, EXIT_FAILURE);
+	}
+	close(pipex->end[0]);
+	close(pipex->end[1]);
+	waitpid(pid1, &status, 0);
+	waitpid(pid2, &status, 0);
 }
 
 int	main(int num_args, char **args, char **envp)
@@ -87,7 +96,7 @@ int	main(int num_args, char **args, char **envp)
 		paths = get_paths(envp);
 		pipex->envp = envp;
 		parser(pipex, num_args, args, paths);
-		ft_pipex(pipex, envp);
+		ft_pipex(pipex);
 		free_all(pipex, EXIT_SUCCESS);
 	}
 	return (0);
