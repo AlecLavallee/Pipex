@@ -6,7 +6,7 @@
 /*   By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 11:53:24 by alelaval          #+#    #+#             */
-/*   Updated: 2021/12/14 16:41:50 by alelaval         ###   ########.fr       */
+/*   Updated: 2021/12/14 18:38:00 by alelaval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,19 @@ t_pipex	*init_all(void)
 	pipex->args1 = NULL;
 	pipex->args2 = NULL;
 	return (pipex);
+}
+
+int	get_path_line(char **paths)
+{
+	int	i;
+
+	i = 0;
+	while (paths)
+	{
+		if (strncmp("PATH", paths[i], 4))
+			return (i);
+	}
+	return (-1);
 }
 
 char	**get_paths(char **envp)
@@ -72,12 +85,16 @@ void	ft_pipex(t_pipex *pipex)
 		perror("Fork ");
 		error(pipex, EXIT_FAILURE);
 	}
+	if (pid1 == 0)
+		first_command(pipex);
 	pid2 = fork();
 	if (pid2 < 0)
 	{
 		perror("Fork ");
 		error(pipex, EXIT_FAILURE);
 	}
+	if (pid2 == 0)
+		second_command(pipex);
 	close(pipex->end[0]);
 	close(pipex->end[1]);
 	waitpid(pid1, &status, 0);
