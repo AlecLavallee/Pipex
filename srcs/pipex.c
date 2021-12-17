@@ -6,7 +6,7 @@
 /*   By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 11:53:24 by alelaval          #+#    #+#             */
-/*   Updated: 2021/12/14 18:38:00 by alelaval         ###   ########.fr       */
+/*   Updated: 2021/12/17 19:03:07 by alelaval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,39 +28,30 @@ t_pipex	*init_all(void)
 	return (pipex);
 }
 
-int	get_path_line(char **paths)
+char	*get_path_line(char **paths)
 {
 	int	i;
 
 	i = 0;
-	while (paths)
+	while (paths[i])
 	{
-		if (strncmp("PATH", paths[i], 4))
-			return (i);
+		if (ft_strncmp("PATH=", paths[i], 5) == 0)
+			return (paths[i] + 5);
+		i++;
 	}
-	return (-1);
+	return (NULL);
 }
 
-char	**get_paths(char **envp)
+char	**get_paths(t_pipex *pipex, char **envp)
 {
-	int		i;
-	int		j;
-	char	buffer[255];
 	char	**paths;
+	char	*path;
 
-	i = 0;
-	j = 0;
-	while (envp[21][j])
-	{
-		if (j >= 5 && !ft_isspace(envp[21][j]))
-		{
-			buffer[i] = envp[21][j];
-			i++;
-		}
-		j++;
-	}
-	buffer[i] = '\0';
-	paths = ft_split(buffer, ':');
+	path = get_path_line(envp);
+	if (path == NULL)
+		error(pipex, EXIT_FAILURE);
+	printf("%s\n", path);
+	paths = ft_split(path, ':');
 	if (paths)
 		return (paths);
 	return (NULL);
@@ -73,6 +64,7 @@ void	ft_pipex(t_pipex *pipex)
 	pid_t	pid1;
 	pid_t	pid2;
 
+	ft_putstr("pipex\n");
 	if (pipe(end) == -1)
 	{
 		perror("Pipe ");
@@ -99,6 +91,7 @@ void	ft_pipex(t_pipex *pipex)
 	close(pipex->end[1]);
 	waitpid(pid1, &status, 0);
 	waitpid(pid2, &status, 0);
+	ft_putstr("noice\n");
 }
 
 int	main(int num_args, char **args, char **envp)
@@ -110,7 +103,7 @@ int	main(int num_args, char **args, char **envp)
 	if (num_args > 2)
 	{
 		pipex = init_all();
-		paths = get_paths(envp);
+		paths = get_paths(pipex, envp);
 		pipex->envp = envp;
 		parser(pipex, num_args, args, paths);
 		ft_pipex(pipex);
