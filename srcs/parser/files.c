@@ -6,13 +6,13 @@
 /*   By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/09 13:38:48 by alelaval          #+#    #+#             */
-/*   Updated: 2021/12/14 16:37:42 by alelaval         ###   ########.fr       */
+/*   Updated: 2021/12/17 17:17:29 by alelaval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	get_fd(char *arg, char *path)
+int	get_fd(t_pipex *pipex, char *arg, int com, char *path)
 {
 	char	*tmp;
 
@@ -23,8 +23,10 @@ int	get_fd(char *arg, char *path)
 		tmp = ft_strjoin(path, arg);
 		if (access(tmp, X_OK) == 0)
 		{
-			free(arg);
-			free(tmp);
+			if (com == 1)
+				pipex->command1 = tmp;
+			else if (com == 2)
+				pipex->command2 = tmp;
 			return (0);
 		}
 		free(arg);
@@ -35,16 +37,18 @@ int	get_fd(char *arg, char *path)
 
 void	test_files(t_pipex *pipex, char **args)
 {
-	int	ret;
 
-	ret = open(args[1], O_RDONLY);
-	if (ret == -1)
+	// enlever erreur et tout casser
+	// tester dans premiere fonction
+	// creer pour deuxieme fonction si pas dispo
+	pipex->file1 = open(args[1], O_RDONLY);
+	if (pipex->file1 == -1)
 	{
 		perror("File1 ");
 		error(pipex, EXIT_FAILURE);
 	}
-	ret = open(args[4], O_RDONLY);
-	if (ret == -1)
+	pipex->file2 = open(args[4], O_WRONLY | O_CREAT);
+	if (pipex->file2 == -1)
 	{
 		perror("File2 ");
 		error(pipex, EXIT_FAILURE);

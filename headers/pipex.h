@@ -6,7 +6,7 @@
 /*   By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/29 11:53:20 by alelaval          #+#    #+#             */
-/*   Updated: 2021/12/14 17:07:05 by alelaval         ###   ########.fr       */
+/*   Updated: 2021/12/17 17:09:14 by alelaval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_pipex	*init_all(void);
 t_pipex	*parser(t_pipex *pipex, int count, char **args, char **paths);
 void	first_command(t_pipex *pipex);
 void	second_command(t_pipex *pipex);
-int		get_fd(char *arg, char *path);
+int 	get_fd(t_pipex *pipex, char *arg, int com, char *path);
 void	test_files(t_pipex *pipex, char **args);
 int		size_array(char **array);
 void	free_all(t_pipex *pipex, int code);
