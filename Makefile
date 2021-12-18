@@ -6,7 +6,7 @@
 #    By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/29 11:56:39 by alelaval          #+#    #+#              #
-#    Updated: 2021/12/13 19:31:28 by alelaval         ###   ########.fr        #
+#    Updated: 2021/12/18 17:43:38 by alelaval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,8 +14,11 @@ NAME = pipex
 
 SRCS = ./srcs/parser/parser.c \
 		./srcs/parser/files.c \
+		./srcs/parser/paths.c \
 		./srcs/process/process.c \
 		./srcs/utils/utils.c \
+		./srcs/utils/utils2.c \
+		./srcs/utils/utils3.c \
 		./srcs/error/error.c \
 		./srcs/error/free.c \
 		./srcs/pipex.c \
@@ -23,7 +26,6 @@ SRCS = ./srcs/parser/parser.c \
 OBJS =	${SRCS:.c=.o}
 
 INCLUDE =	./headers/
-LIB_PATH =	./libft/
 CFLAGS =	-Wall -Wextra -Werror
 RM = 		rm -rf
 
@@ -31,16 +33,13 @@ all: 		${NAME}
 
 bonus:		pipex_bonus
 
-lib:
-	make -C libft
-
 .c.o:
 			${CC} ${CFLAGS} -I${INCLUDE} -c $< -o ${<:.c=.o}
 
-${NAME}:	${OBJS} $(LIB)
-			${CC} ${CFLAGS} -I${INCLUDE} -o ${NAME} ${OBJS} -L./libft/ -lft
+${NAME}:	${OBJS}
+			${CC} ${CFLAGS} -I${INCLUDE} -o ${NAME} ${OBJS}
 
-${NAME_BONUS}:	${OBJS} $(LIB)
+${NAME_BONUS}:	${OBJS}
 					${CC} ${CFLAGS} -I${INCLUDE} -o ${NAME_BONUS} ${OBJS}
 
 clean:
@@ -51,4 +50,4 @@ fclean:	clean
 
 re:			fclean all
 
-.PHONY:		lib bonus all clean fclean re
+.PHONY:		bonus all clean fclean re

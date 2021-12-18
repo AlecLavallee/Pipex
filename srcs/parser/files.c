@@ -6,7 +6,7 @@
 /*   By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/09 13:38:48 by alelaval          #+#    #+#             */
-/*   Updated: 2021/12/17 17:17:29 by alelaval         ###   ########.fr       */
+/*   Updated: 2021/12/18 16:01:17 by alelaval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,20 +37,13 @@ int	get_fd(t_pipex *pipex, char *arg, int com, char *path)
 
 void	test_files(t_pipex *pipex, char **args)
 {
-
-	// enlever erreur et tout casser
-	// tester dans premiere fonction
-	// creer pour deuxieme fonction si pas dispo
+	pipex->file1_name = args[1];
 	pipex->file1 = open(args[1], O_RDONLY);
-	if (pipex->file1 == -1)
-	{
-		perror("File1 ");
-		error(pipex, EXIT_FAILURE);
-	}
-	pipex->file2 = open(args[4], O_WRONLY | O_CREAT);
+	pipex->file2 = open(args[4], O_WRONLY | O_CREAT | O_TRUNC,
+			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (pipex->file2 == -1)
 	{
 		perror("File2 ");
-		error(pipex, EXIT_FAILURE);
+		error(pipex);
 	}
 }

@@ -1,18 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error.c                                            :+:      :+:    :+:   */
+/*   paths.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/29 13:19:37 by alelaval          #+#    #+#             */
-/*   Updated: 2021/12/18 14:06:26 by alelaval         ###   ########.fr       */
+/*   Created: 2021/12/18 15:01:55 by alelaval          #+#    #+#             */
+/*   Updated: 2021/12/18 16:23:22 by alelaval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	error(t_pipex *pipex)
+char	*get_path_line(char **paths)
 {
-	free_all(pipex);
+	int	i;
+
+	i = 0;
+	while (paths[i])
+	{
+		if (ft_strncmp("PATH=", paths[i], 5) == 0)
+			return (paths[i] + 5);
+		i++;
+	}
+	return (NULL);
+}
+
+char	**get_paths(t_pipex *pipex, char **envp)
+{
+	char	**paths;
+	char	*path;
+
+	path = get_path_line(envp);
+	if (path == NULL)
+		error(pipex);
+	paths = ft_split(path, ':');
+	pipex->paths = paths;
+	if (paths)
+		return (paths);
+	return (NULL);
 }
