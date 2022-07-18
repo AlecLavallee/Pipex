@@ -6,7 +6,7 @@
 #    By: alelaval <alelaval@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/29 11:56:39 by alelaval          #+#    #+#              #
-#    Updated: 2021/12/18 17:43:38 by alelaval         ###   ########.fr        #
+#    Updated: 2021/12/18 18:45:30 by alelaval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,8 @@ SRCS = ./srcs/parser/parser.c \
 		./srcs/pipex.c \
 
 OBJS =	${SRCS:.c=.o}
+
+CC 	= gcc
 
 INCLUDE =	./headers/
 CFLAGS =	-Wall -Wextra -Werror
